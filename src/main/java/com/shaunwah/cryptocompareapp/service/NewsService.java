@@ -31,7 +31,7 @@ public class NewsService {
 
     public void saveArticles(List<Article> articles) {
         for (Article article: articles) {
-            saveArticle(article);
+            this.saveArticle(article);
         }
     }
 
@@ -45,7 +45,7 @@ public class NewsService {
         return Optional.empty();
     }
 
-    public Optional<List<Article>> getExternalArticles() {
+    public Optional<List<Article>> getArticles() {
         String url = UriComponentsBuilder
                 .fromUriString("https://min-api.cryptocompare.com/data/v2/news/")
                 .queryParam("lang", cryptocompareApiLang)

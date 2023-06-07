@@ -25,7 +25,7 @@ public class NewsController {
     @GetMapping(path = "/",
             produces = MediaType.TEXT_HTML_VALUE)
     public String getArticles(Model model) {
-        Optional<List<Article>> articles = newsService.getExternalArticles();
+        Optional<List<Article>> articles = newsService.getArticles();
 
         if (articles.isPresent()) {
             model.addAttribute("articles", articles.get());
@@ -40,7 +40,7 @@ public class NewsController {
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
             produces = MediaType.TEXT_HTML_VALUE)
     public String saveArticles(@RequestBody MultiValueMap<String, String> requestBody) {
-        List<Article> articles = new LinkedList<Article>(requestBody
+        List<Article> articles = new LinkedList<>(requestBody
                 .toSingleValueMap()
                 .values()
                 .stream()
