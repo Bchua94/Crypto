@@ -12,10 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 public class NewsService {
@@ -32,8 +29,8 @@ public class NewsService {
         newsRepository.saveArticle(article.toJson());
     }
 
-    public void saveArticles(Map<String, Article> articles) {
-        for (Article article: articles.values()) {
+    public void saveArticles(List<Article> articles) {
+        for (Article article: articles) {
             saveArticle(article);
         }
     }
@@ -48,17 +45,7 @@ public class NewsService {
         return Optional.empty();
     }
 
-    public Map<String, Article> retrieveArticles() {
-        return newsRepository.retrieveArticles()
-                .entrySet()
-                .stream()
-                .collect(Collectors.toMap(k -> k.getKey(), v -> {
-                    JsonReader jr = Json.createReader(new StringReader(v.getValue()));
-                    return Article.fromJson(jr.readObject());
-                }));
-    }
-
-    public Optional<Map<String, Article>> getExternalArticles() {
+    public Optional<List<Article>> getExternalArticles() {
         String url = UriComponentsBuilder
                 .fromUriString("https://min-api.cryptocompare.com/data/v2/news/")
                 .queryParam("lang", cryptocompareApiLang)
@@ -70,14 +57,14 @@ public class NewsService {
         ResponseEntity<String> response = template.exchange(request, String.class);
 
         if (response.hasBody()) {
-            Map<String, Article> articles = new HashMap<>();
+            List<Article> articles = new LinkedList<>();
             JsonReader jr = Json.createReader(new StringReader(response.getBody()));
             JsonObject obj = jr.readObject();
             JsonArray jsonArticles = obj.getJsonArray("Data");
 
             for (JsonValue jsonArticle: jsonArticles) {
                 Article article = Article.fromJson(jsonArticle.asJsonObject());
-                articles.put(article.getId(), article);
+                articles.add(article);
             }
 
             return Optional.of(articles);

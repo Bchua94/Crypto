@@ -8,15 +8,15 @@
 <h1>Crypto News of the Day</h1>
 <form action="/articles" method="post">
     <div data-th-each="article: ${articles}" style="border: black solid 1px;">
-        <h2 data-th-text="${article.value.title}"></h2><br>
-        <img data-th-src="${article.value.imageurl}" height="100px" width="100px"><br>
-        ID: <span data-th-text="${article.value.id}"></span><br>
-        Published On: <span data-th-text="${#dates.format(article.value.published_on * 1000, 'dd-MM-yyyy HH:mm:ss')}"></span><br>
-        <a data-th-href="${article.value.url}" target="_blank">Click to read</a><br>
-        <span data-th-text="${article.value.body}"></span><br>
-        Tags: <span data-th-text="${article.value.tags.replaceAll('\|', ', ')}"></span><br>
-        Categories: <span data-th-text="${article.value.categories.replaceAll('\|', ', ')}"></span><br>
-        <input type="checkbox" data-th-name="${article.value.id}" data-th-id="${article.value.id}" data-th-value="${article.value.toJson()}"> Save
+        <h2 data-th-text="${article.title}"></h2><br>
+        <img data-th-src="${article.imageurl}" height="100px" width="100px"><br>
+        ID: <span data-th-text="${article.id}"></span><br>
+        Published On: <span data-th-text="${#dates.format(article.published_on * 1000, 'dd-MM-yyyy HH:mm:ss')}"></span><br>
+        <a data-th-href="${article.url}" target="_blank">Click to read</a><br>
+        <span data-th-text="${article.body}"></span><br>
+        Tags: <span data-th-text="${article.tags.replaceAll('\|', ', ')}"></span><br>
+        Categories: <span data-th-text="${article.categories.replaceAll('\|', ', ')}"></span><br>
+        <input type="checkbox" data-th-name="${article.id}" data-th-id="${article.id}" data-th-value="${article.toJson()}"> Save
     </div>
     <button type="submit">Save</button>
 </form>

@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Repository
 public class NewsRepository {
@@ -22,10 +22,11 @@ public class NewsRepository {
         return (String) redisTemplate.opsForHash().get(KEY, id);
     }
 
-    public Map<String, String> retrieveArticles() {
+    public List<String> retrieveArticles() {
         Map<Object, Object> result = redisTemplate.opsForHash().entries(KEY);
-        return result.entrySet()
+        return result.values()
                 .stream()
-                .collect(Collectors.toMap(k -> (String) k.getKey(), v -> (String) v.getValue()));
+                .map(v -> (String) v)
+                .toList();
     }
 }

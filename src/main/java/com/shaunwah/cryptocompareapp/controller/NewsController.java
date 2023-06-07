@@ -12,9 +12,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.StringReader;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping
@@ -25,10 +25,12 @@ public class NewsController {
     @GetMapping(path = "/",
             produces = MediaType.TEXT_HTML_VALUE)
     public String getArticles(Model model) {
-        Optional<Map<String, Article>> articles = newsService.getExternalArticles();
+        Optional<List<Article>> articles = newsService.getExternalArticles();
 
         if (articles.isPresent()) {
             model.addAttribute("articles", articles.get());
+        } else {
+            model.addAttribute("articles", new LinkedList<Article>());
         }
 
         return "articles";
@@ -38,13 +40,15 @@ public class NewsController {
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
             produces = MediaType.TEXT_HTML_VALUE)
     public String saveArticles(@RequestBody MultiValueMap<String, String> requestBody) {
-        Map<String, Article> articles = requestBody.toSingleValueMap()
-                .entrySet()
+        List<Article> articles = new LinkedList<Article>(requestBody
+                .toSingleValueMap()
+                .values()
                 .stream()
-                .collect(Collectors.toMap(k -> k.getKey(), v -> {
-                    JsonReader jr = Json.createReader(new StringReader(v.getValue()));
+                .map(v -> {
+                    JsonReader jr = Json.createReader(new StringReader(v));
                     return Article.fromJson(jr.readObject());
-                }));
+                })
+                .toList());
         newsService.saveArticles(articles);
         return "articlesSaved";
     }
