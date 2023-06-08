@@ -30,7 +30,7 @@ public class NewsController {
         if (articles.isPresent()) {
             model.addAttribute("articles", articles.get());
         } else {
-            model.addAttribute("articles", new LinkedList<Article>());
+            model.addAttribute("articles_message", "Cannot retrieve news.");
         }
 
         return "articles";

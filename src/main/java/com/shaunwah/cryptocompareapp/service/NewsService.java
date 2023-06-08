@@ -56,10 +56,15 @@ public class NewsService {
         RestTemplate template = new RestTemplate();
         ResponseEntity<String> response = template.exchange(request, String.class);
 
-        if (response.hasBody()) {
+        if (response.getStatusCode().is2xxSuccessful() && response.hasBody()) {
             List<Article> articles = new LinkedList<>();
             JsonReader jr = Json.createReader(new StringReader(response.getBody()));
             JsonObject obj = jr.readObject();
+
+            if (obj.containsKey("Response") && obj.getString("Response").equals("Error")) {
+                return Optional.empty();
+            }
+
             JsonArray jsonArticles = obj.getJsonArray("Data");
 
             for (JsonValue jsonArticle: jsonArticles) {

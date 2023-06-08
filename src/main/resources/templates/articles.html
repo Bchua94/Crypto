@@ -8,7 +8,10 @@
 <h1>Crypto News of the Day</h1>
 <form action="/articles" method="post">
     <button type="submit">Save</button>
-    <div data-th-each="article: ${articles}" style="border: black solid 1px;">
+    <div data-th-if="${articles_message != null}">
+        <p data-th-text="${articles_message}"></p>
+    </div>
+    <div data-th-unless="${#lists.isEmpty(articles)}" data-th-each="article: ${articles}" style="border: black solid 1px;">
         <h2 data-th-text="${article.title}"></h2><br>
         <img data-th-src="${article.imageurl}" height="100px" width="100px"><br>
         ID: <span data-th-text="${article.id}"></span><br>
